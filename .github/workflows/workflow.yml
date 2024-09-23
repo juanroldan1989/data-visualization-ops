@@ -1,0 +1,31 @@
+name: Docker Image Generation
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+      - name: Push Docker image to AWS
+        run: |
+          aws ecr get-login-password --region <aws-region> \
+          docker login --username AWS --password-stdin <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com \
+          docker tag my-image-name:$(date +%s) <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com/my-image-name:latest \
+          docker push <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com/my-image-name:latest
+
+      - name: Notify platform team about new Docker image via Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          channel-id: <your-slack-channel-id>
+          slack-message: "New Docker image has been pushed to AWS ECR"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

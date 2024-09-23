@@ -34,7 +34,7 @@ CMD ["app.py"]
 
 ### Notify Platform Team about deployments
 
-- 🟢 Github Actions step added for Slack notifications.
+- 🟢 Github Actions step added for Slack notifications to notify Data Scientists & Platform Team.
 
 ## 3. Improvements to Gwen's workflow
 
@@ -43,7 +43,18 @@ Current state:
 1. Software relies on CSV file contents to generate results.
 2. CSV file `clean.csv` is included **within** Docker image for testing and development purposes.
 
-Improvemennt:
+Improvements:
 
 1. Update python app to work with **external** CSV file.
-2. **S3 Bucket** provides drag-and-drop UI for colleagues to securely share files there.
+   -> Python library to fetch data from Sharepoint:
+   https://python.plainenglish.io/list-download-files-from-sharepoint-using-python-44cfc0793397
+
+2. Current codebase will fetch latest data from Sharepoint.
+
+3. Codebase will fallback to existing CSV file if Sharepoint API is not responsive.
+
+4. Future:
+
+- **S3 Bucket** provides drag-and-drop UI for colleagues to securely share files there.
+
+- AWS SDK to be included within codebase for authentication puroses before downloading/uploading files.

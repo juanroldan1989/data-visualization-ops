@@ -96,7 +96,7 @@ jobs:
 
   notify:
     needs: [build, push, deploy]
-    name: Notify Platform Team
+    name: Notify via Slack - Data Scientists | Platform Team
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository

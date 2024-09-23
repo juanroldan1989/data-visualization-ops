@@ -32,8 +32,20 @@ jobs:
           docker tag my-image-name:$(date +%s) <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com/my-image-name:latest \
           docker push <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com/my-image-name:latest
 
-  notify:
+  deploy:
     needs: [build, push]
+    name: Deploy Flask App (ECS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS ECS
+        run: |
+          aws ecs update-service --cluster <your-cluster-name> --service <your-service-name> --force-new-deployment
+
+  notify:
+    needs: [build, push, deploy]
     name: Notify Platform Team
     runs-on: ubuntu-latest
     steps:

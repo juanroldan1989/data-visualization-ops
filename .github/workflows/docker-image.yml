@@ -1,0 +1,17 @@
+name: Docker Image Generation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Push Docker image to AWS
+    - name: Notify users about new Docker image (include instructions on next steps)

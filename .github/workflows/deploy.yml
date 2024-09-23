@@ -1,18 +1,14 @@
-name: Docker Image Generation
+name: Deploy Flask App
 
 on:
   push:
     branches: ["main"]
-    paths:
-      - "/path/to/csv/file.csv"
   pull_request:
     branches: ["main"]
-    paths:
-      - "/path/to/csv/file.csv"
 
 jobs:
   build:
-    name: Build Docker Image
+    name: Build Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
@@ -29,7 +25,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Login into AWS
+      - name: Login, Tag and Push Docker image
         run: |
           aws ecr get-login-password --region <aws-region> \
           docker login --username AWS --password-stdin <your-aws-account-id>.dkr.ecr.us-west-2.amazonaws.com \
@@ -38,7 +34,7 @@ jobs:
 
   notify:
     needs: [build, push]
-    name: Notify Platform Team about new Docker image via Slack
+    name: Notify Platform Team
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository

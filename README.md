@@ -4,23 +4,9 @@ Points tackled:
 
 ## 1. Dockerfile generation and troubleshooting with python libraries
 
-🟢 Dockerfile adjusted based on meeting with Gwen:
-
-```ruby
-# syntax=docker/dockerfile:1.4
-FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
-
-WORKDIR /app
-
-COPY requirements.txt /app
-RUN --mount=type=cache,target=/root/.cache/pip \
-  pip3 install -r requirements.txt
-
-COPY . /app
-
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
-```
+- 🟢 Dockerfile adjusted based on meeting with Gwen
+- 🟢 Docker image successfully generated
+- 🟢 Docker container up and running with Flask Application
 
 ## 2. How to automate every day work
 
@@ -28,15 +14,31 @@ CMD ["app.py"]
 
 - 🟢 Github Actions pipeline should watch changes and trigger the process.
 
+### Docker image should be pushed to image registry
+
+(TBD) Image Registry options:
+
+1. Docker Hub
+2. Github Registry
+
+https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-docker-images#publishing-images-to-docker-hub-and-github-packages
+
+3. AWS ECR (Elastic Container Registry)
+
 ### Python App (Flask) within AWS should be re-deployed with new Docker image
 
 - [Work in progress] Add Github actions steps to deploy Flask app to ECS.
 
-### Notify Platform Team about deployments
+### Deployment notifications
 
-- 🟢 Github Actions step added for Slack notifications to notify Data Scientists & Platform Team.
+- 🟢 Github Actions step added for Slack notifications
 
-## 3. Improvements to Gwen's workflow
+- Slack Channel should be created for notifications.
+- Data Scientists & Platform Team should have access to said channel.
+
+<img src="https://github.com/juanroldan1989/terraform-url-shortener/raw/main/screenshots/slack-notification-from-pipeline.png" width="100%" />
+
+## 3. Improvements to current workflow
 
 Current state:
 
@@ -58,3 +60,37 @@ Improvements:
 - **S3 Bucket** provides drag-and-drop UI for colleagues to securely share files there.
 
 - AWS SDK to be included within codebase for authentication puroses before downloading/uploading files.
+
+# AWS ECR Repository setup
+
+- `ECR_REGISTRY` -> `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`
+- `ECR_REPOSITORY` -> `paebbl-repository`
+- `IMAGE_TAG` -> latest commit SHA from Github repository
+
+1. Create AWS Docker Image registry
+
+```ruby
+$ aws ecr create-repository --repository-name $ECR_REPOSITORY --region <region>
+```
+
+2. Build Docker image:
+
+```ruby
+$ docker build -t flask-app .
+```
+
+3. Tag Docker image (matching new release):
+
+```ruby
+$ docker tag flask-app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+```
+
+4. Push Docker image to registry:
+
+```
+$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+$ docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+```
+
+# AWS ECS Cluster setup

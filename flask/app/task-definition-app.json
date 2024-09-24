@@ -8,20 +8,20 @@
   "containerDefinitions": [
     {
       "name": "app",
-      "image": "542979624611.dkr.ecr.us-east-1.amazonaws.com/paebbl-repository:9cbe6ac49a0dc8b1ed77ddc6f8947b0ae47044fd",
+      "image": "542979624611.dkr.ecr.us-east-1.amazonaws.com/paebbl-repository:68d0643ff26d9ac3d9bd41d96beecaf73817002d",
       "links": [],
       "portMappings": [
         {
           "name": "app-port",
-          "hostPort": 8000,
-          "containerPort": 8000,
+          "hostPort": 5000,
+          "containerPort": 5000,
           "protocol": "tcp",
           "appProtocol": "http"
         }
       ],
       "essential": true,
       "entryPoint": [],
-      "command": ["gunicorn -w 3 -t 60 -b 0.0.0.0:8000 app:app"],
+      "command": ["gunicorn -w 3 -t 60 -b 0.0.0.0:5000 app:app"],
       "environment": [
           {
             "name": "SAMPLE_ENV_VARIABLBE",

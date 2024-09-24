@@ -122,6 +122,12 @@ $ docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 1. Create ECS Cluster
 
 ```ruby
+ecs-cli configure \
+  --region us-east-1 \
+  --cluster ecs-paebbl-cluster \
+  --default-launch-type EC2 \
+  --config-name ecs-paebbl-cluster
+
 aws ecs create-cluster \
   --cluster-name ecs-paebbl-cluster \
   --service-connect-defaults namespace=paebbl-namespace \
@@ -135,8 +141,8 @@ aws ecs create-cluster \
 ```ruby
 aws ecs put-cluster-capacity-providers \
   --cluster ecs-paebbl-cluster \
-  --capacity-providers FARGATE \
-  --default-capacity-provider-strategy capacityProvider=FARGATE,weight=1 \
+  --capacity-providers EC2 \
+  --default-capacity-provider-strategy capacityProvider=EC2,weight=1 \
   --region us-east-1
 ```
 
@@ -145,7 +151,7 @@ aws ecs put-cluster-capacity-providers \
 ```ruby
 aws ecs register-task-definition \
   --region us-east-1 \
-  --requires-compatibilities FARGATE \
+  --requires-compatibilities EC2 \
   --cli-input-json file://flask/app/task-definition-app.json
 ```
 
@@ -154,9 +160,8 @@ aws ecs register-task-definition \
 ```ruby
 aws ecs run-task \
   --cluster ecs-paebbl-cluster \
-  --task-definition task-definition-app:1 \
-  --count 1 --launch-type FARGATE \
-  --network-configuration "awsvpcConfiguration={subnets=[subnet-307a0a11,subnet-848cb6c9],securityGroups=[sg-b60ebab6]}"
+  --task-definition task-definition-app:5 \
+  --count 1 --launch-type EC2
 ```
 
 ```ruby
@@ -165,8 +170,7 @@ aws ecs create-service \
   --service-name "app" \
   --desired-count 1 \
   --task-definition "task-definition-app" \
-  --launch-type FARGATE \
-  --network-configuration "awsvpcConfiguration={subnets=[subnet-307a0a11,subnet-848cb6c9],securityGroups=[sg-b60ebab6]}" \
+  --launch-type EC2 \
   --service-connect-configuration '{
     "enabled": true,
     "namespace": "paebbl-namespace",

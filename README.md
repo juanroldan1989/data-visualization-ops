@@ -4,6 +4,8 @@
 2. [Milestones](#milestones)
 3. [Secure App Access](#secure-app-access)
 
+[Slides](https://docs.google.com/presentation/d/160hWqh9vSh-fF2EI2x-cUtoE3KtobIK2BL_jAX808lU/edit?usp=sharing)
+
 # Primary Goal
 
 Make data visualisation work accessible to colleagues
@@ -50,7 +52,6 @@ https://aws.amazon.com/blogs/containers/securing-amazon-elastic-container-servic
 ![Cognito-ALB-Authentication-with-Fargate-Title](https://github.com/user-attachments/assets/2968b9b4-f1ce-4c79-9a64-6b0be3cd0208)
 
 ![hostedUI-login-IdP-selection](https://github.com/user-attachments/assets/1a537a40-993d-4140-aae3-0db4c96dd1ae)
-
 
 - Authenticate users accessing containerized application **without writing authentication code**.
 

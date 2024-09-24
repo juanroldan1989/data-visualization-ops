@@ -12,7 +12,7 @@ env:
   ECR_REPOSITORY: paebbl-repository
   ECS_CLUSTER: ecs-paebbl-cluster
   ECS_SERVICE: app
-  ECS_TASK_DEFINITION: task-definition-app
+  ECS_TASK_DEFINITION: flask/app/task-definition-app.json
   CONTAINER_NAME: app
   IMAGE_TAG: ${{ github.sha }}
 
@@ -53,7 +53,7 @@ jobs:
 
   deploy:
     needs: [push]
-    name: Deploy
+    name: Deploy App
     runs-on: ubuntu-latest
     environment: production
 
@@ -97,7 +97,7 @@ jobs:
         id: render-web-container
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: flask/app/task-definition-app.json
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
@@ -107,13 +107,13 @@ jobs:
       - name: Deploy Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
-          task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
 
   notify:
     needs: [test, push, deploy]
-    name: Notify via Slack - Data Scientists | Platform Team
+    name: Notify via Slack
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository

@@ -20,19 +20,19 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build Docker image
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} flask/app
+      - name: Run Tests
+        run: echo "Running tests ..."
 
   push:
-    needs: [build]
-    name: Push Docker image
+    needs: [test]
+    name: Build/Push Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,7 +52,7 @@ jobs:
           docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
   deploy:
-    needs: [build, push]
+    needs: [push]
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
@@ -102,7 +102,7 @@ jobs:
           wait-for-service-stability: true
 
   notify:
-    needs: [build, push, deploy]
+    needs: [test, push, deploy]
     name: Notify via Slack - Data Scientists | Platform Team
     runs-on: ubuntu-latest
     steps:

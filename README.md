@@ -1,33 +1,38 @@
-# Paebbl - Automation requirements to support Gwen
+# Paebbl - Data Visualization Ops
 
-Points tackled:
+1. [Primary Goal](#primary-goal)
+2. [Milestones](#milestones)
+3. [Secure App Access](#secure-app-access)
 
-## 1. Dockerfile generation and troubleshooting with python libraries
+# Primary Goal
+
+Make data visualisation work accessible to colleagues
+
+# Milestones
+
+## 1. Dockerise App
+
+Dockerfile generation and troubleshooting with python libraries.
 
 - 🟢 Dockerfile adjusted based on meeting with Gwen
 - 🟢 Docker image successfully generated
 - 🟢 Docker container up and running with Flask Application
 
-## 2. How to automate every day work
+## 2. Pipeline
 
-### Source code updates to `main` branch should build new image
+How to automate every day work:
 
+- 🟢 Source code updates to `main` branch should build new image
 - 🟢 Github Actions pipeline should watch changes and trigger the process.
-
-### Docker image should be pushed to image registry
-
-(TBD) Image Registry options:
-
-1. Docker Hub
-2. Github Registry
+- 🟢 Docker image should be pushed to image registry
 
 https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-docker-images#publishing-images-to-docker-hub-and-github-packages
 
-3. AWS ECR (Elastic Container Registry)
+## 3. Deployment
 
-### Python App (Flask) within AWS should be re-deployed with new Docker image
+Python App (Flask) within AWS should be re-deployed with new Docker image:
 
-- [Work in progress] Add Github actions steps to deploy Flask app to ECS.
+- 🟢 Add Github actions steps to deploy Flask app to ECS.
 
 ### Deployment notifications
 
@@ -38,7 +43,17 @@ https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/pu
 
 <img src="https://github.com/juanroldan1989/terraform-url-shortener/raw/main/screenshots/slack-notification-from-pipeline.png" width="100%" />
 
-## 3. Improvements to current workflow
+# Secure App Access
+
+https://aws.amazon.com/blogs/containers/securing-amazon-elastic-container-service-applications-using-application-load-balancer-and-amazon-cognito/
+
+- Authenticate users accessing containerized application **without writing authentication code**.
+
+- Using ALB inbuilt integration with Amazon Cognito.
+
+- Authentication **is offloaded** from the application.
+
+## Improvements
 
 Current state:
 

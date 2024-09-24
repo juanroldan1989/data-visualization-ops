@@ -97,3 +97,69 @@ $ docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 ```
 
 # AWS ECS Cluster setup
+
+1. Create ECS Cluster
+
+```ruby
+aws ecs create-cluster \
+  --cluster-name ecs-paebbl-cluster \
+  --service-connect-defaults namespace=paebbl-namespace \
+  --region us-east-1 \
+  --tags key=app,value=ecs-paebbl-cluster key=owner,value=paebbl \
+  --settings '{ "name": "containerInsights", "value": "enabled" }'
+```
+
+2. Set Capacity Providers:
+
+```ruby
+aws ecs put-cluster-capacity-providers \
+  --cluster ecs-paebbl-cluster \
+  --capacity-providers FARGATE \
+  --default-capacity-provider-strategy capacityProvider=FARGATE,weight=1 \
+  --region us-east-1
+```
+
+3. Register ECS Task that representes application:
+
+```ruby
+aws ecs register-task-definition \
+  --region us-east-1 \
+  --requires-compatibilities FARGATE \
+  --cli-input-json file://flask/app/task-definition-app.json
+```
+
+4. Create ECS Service that serves application to users:
+
+```ruby
+aws ecs run-task \
+  --cluster ecs-paebbl-cluster \
+  --task-definition task-definition-app:1 \
+  --count 1 --launch-type FARGATE \
+  --network-configuration "awsvpcConfiguration={subnets=[subnet-307a0a11,subnet-848cb6c9],securityGroups=[sg-b60ebab6]}"
+```
+
+```ruby
+aws ecs create-service \
+  --cluster ecs-paebbl-cluster \
+  --service-name "app" \
+  --desired-count 1 \
+  --task-definition "task-definition-app" \
+  --launch-type FARGATE \
+  --network-configuration "awsvpcConfiguration={subnets=[subnet-307a0a11,subnet-848cb6c9],securityGroups=[sg-b60ebab6]}" \
+  --service-connect-configuration '{
+    "enabled": true,
+    "namespace": "paebbl-namespace",
+    "services":
+    [
+        {
+          "portName": "app-port",
+          "clientAliases": [
+            {
+                "port": 80,
+                "dnsName": "app"
+              }
+            ]
+        }
+      ]
+  }'
+```

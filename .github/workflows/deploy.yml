@@ -11,9 +11,9 @@ env:
   ECR_REGISTRY: 542979624611.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: paebbl-repository
   ECS_CLUSTER: ecs-paebbl-cluster
-  ECS_SERVICE: flask-app-service
-  ECS_TASK_DEFINITION: flask-app-task
-  CONTAINER_NAME: flask-app-container
+  ECS_SERVICE: app
+  ECS_TASK_DEFINITION: task-definition-app
+  CONTAINER_NAME: app
   IMAGE_TAG: ${{ github.sha }}
 
 permissions:

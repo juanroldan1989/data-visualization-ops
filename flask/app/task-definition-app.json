@@ -1,0 +1,71 @@
+{
+  "family": "task-definition-app",
+  "executionRoleArn": "arn:aws:iam::542979624611:role/ecsTaskExecutionRole",
+  "cpu": "256",
+  "memory": "512",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "542979624611.dkr.ecr.us-east-1.amazonaws.com/paebbl-repository:9cbe6ac49a0dc8b1ed77ddc6f8947b0ae47044fd",
+      "links": [],
+      "portMappings": [
+        {
+          "name": "app-port",
+          "hostPort": 8000,
+          "containerPort": 8000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [
+          {
+            "name": "SAMPLE_ENV_VARIABLBE",
+            "value": "true"
+          }
+      ],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "linuxParameters": {
+        "capabilities": {
+          "add": [],
+          "drop": []
+        },
+        "devices": []
+      },
+      "privileged": false,
+      "readonlyRootFilesystem": false,
+      "dnsServers": [],
+      "dnsSearchDomains": [],
+      "extraHosts": [],
+      "dockerSecurityOptions": [],
+      "pseudoTerminal": false,
+      "dockerLabels": {},
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "flask-app",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "flask-app-paebbl"
+        }
+      },
+      "systemControls": []
+    }
+ ],
+ "placementConstraints": [],
+ "tags": [
+    {
+      "key": "app",
+      "value": "flask-app"
+    },
+    {
+      "key": "owner",
+      "value": "paebbl"
+    }
+  ]
+}

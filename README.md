@@ -47,6 +47,11 @@ Python App (Flask) within AWS should be re-deployed with new Docker image:
 
 https://aws.amazon.com/blogs/containers/securing-amazon-elastic-container-service-applications-using-application-load-balancer-and-amazon-cognito/
 
+![Cognito-ALB-Authentication-with-Fargate-Title](https://github.com/user-attachments/assets/2968b9b4-f1ce-4c79-9a64-6b0be3cd0208)
+
+![hostedUI-login-IdP-selection](https://github.com/user-attachments/assets/1a537a40-993d-4140-aae3-0db4c96dd1ae)
+
+
 - Authenticate users accessing containerized application **without writing authentication code**.
 
 - Using ALB inbuilt integration with Amazon Cognito.

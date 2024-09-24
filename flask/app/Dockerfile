@@ -1,15 +1,32 @@
-# syntax=docker/dockerfile:1.4
-FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
+FROM python:3.9.2-alpine
 
-WORKDIR /app
+# upgrade pip
+RUN pip install --upgrade pip
 
-COPY requirements.txt /app
-RUN --mount=type=cache,target=/root/.cache/pip \
-  pip3 install -r requirements.txt
+# get curl for healthchecks
+RUN apk add curl
 
-COPY . /app
+# permissions and nonroot user for tightened security
+RUN adduser -D nonroot
+RUN mkdir /home/app/ && chown -R nonroot:nonroot /home/app
+RUN mkdir -p /var/log/flask-app && touch /var/log/flask-app/flask-app.err.log && touch /var/log/flask-app/flask-app.out.log
+RUN chown -R nonroot:nonroot /var/log/flask-app
+WORKDIR /home/app
+USER nonroot
 
-EXPOSE 8000
+# copy all the files to the container
+COPY --chown=nonroot:nonroot . .
 
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+# venv
+ENV VIRTUAL_ENV=/home/app/venv
+
+# python setup
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN export FLASK_APP=app.py
+RUN pip install -r requirements.txt
+
+# define the port number the container should expose
+EXPOSE 5000
+
+CMD ["python", "app.py"]

@@ -21,7 +21,7 @@
       ],
       "essential": true,
       "entryPoint": [],
-      "command": [],
+      "command": ["gunicorn -w 3 -t 60 -b 0.0.0.0:8000 app:app"],
       "environment": [
           {
             "name": "SAMPLE_ENV_VARIABLBE",

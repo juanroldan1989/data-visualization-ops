@@ -65,6 +65,7 @@ Improvements:
 
 - `ECR_REGISTRY` -> `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`
 - `ECR_REPOSITORY` -> `paebbl-repository`
+- `REGION` -> `us-east-1`
 - `IMAGE_TAG` -> latest commit SHA from Github repository
 
 1. Create AWS Docker Image registry
@@ -88,7 +89,9 @@ $ docker tag flask-app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 4. Push Docker image to registry:
 
 ```
-$ aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin $ECR_REGISTRY
+$ aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+Login Succeeded
 
 $ docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 ```
